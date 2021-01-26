@@ -8,5 +8,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 export class AboutComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+
+
+  }
 }
