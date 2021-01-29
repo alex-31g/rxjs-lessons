@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { response } from 'express';
+import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
 
 @Component({
   selector: 'about',
@@ -10,7 +12,43 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
+    // Observable.create - создает Observable.
+    // Параметром принимает ф-цию, которая описывает, 
+    // как Observable будет работать со своими наблюдателями-подписчиками (observer)
+    const http$ = Observable.create(observer => {
 
+      // С помощью методов next, error, complete происходит взаимодействие с наблюдателями
+
+      fetch('/api/courses')
+        .then(response => {
+          return response.json();
+        })
+        .then(body => {
+          // next() - выдаем наблюдателям новые данные
+          observer.next(body);
+
+          // complete() - оповещаем наблюдателей, что поток завершился и новой информации не будет
+          observer.complete();
+        })
+        .catch(err => {
+          // error() - оповещаем наблюдателей об ошибке
+          observer.error(err);
+        })
+
+    });
+
+    // Cоздание подписчика выполняется с помощью метода subscribe(), который принимает три метода-обработчика
+    http$.subscribe(
+      // 1й метод - сработает, когда в Observable произойдет событие next()
+      courses => console.log(courses),
+
+      // 2й метод - сработает, когда в Observable произойдет событие-ошибка error()
+      // noop - rxjs оператор, который говорит, что в данной секции отсутствует операция
+      noop,
+
+      // 3й метод - сработает, когда в Observable произойдет событие complete()
+      () => console.log('completed')
+    )
 
   }
 }
