@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
 import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
 
 @Component({
   selector: 'about',
@@ -12,33 +14,19 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
-    // Observable.create - создает Observable.
-    // Параметром принимает ф-цию, которая описывает, 
-    // как Observable будет работать со своими наблюдателями-подписчиками (observer)
-    const http$ = Observable.create(observer => {
+    const http$ = createHttpObservable('/api/courses');
 
-      // С помощью методов next, error, complete происходит взаимодействие с наблюдателями
-
-      fetch('/api/courses')
-        .then(response => {
-          return response.json();
-        })
-        .then(body => {
-          // next() - выдаем наблюдателям новые данные
-          observer.next(body);
-
-          // complete() - оповещаем наблюдателей, что поток завершился и новой информации не будет
-          observer.complete();
-        })
-        .catch(err => {
-          // error() - оповещаем наблюдателей об ошибке
-          observer.error(err);
-        })
-
-    });
+    // Создаем новый Observable на базе http$
+    const courses$ = http$
+      // До того как была выполнена подписка с помощью subscribe(), с потоком можно работать внутри rxjs-метода pipe()
+      // pipe() - позволяет чейнить несколько rxjs-операторов, чтобы создать новый Observable-поток
+      .pipe(
+        // map() - модифицирует значение из потока с помощью ф-ции-аргумента
+        map(res => res['payload'])
+      );
 
     // Cоздание подписчика выполняется с помощью метода subscribe(), который принимает три метода-обработчика
-    http$.subscribe(
+    courses$.subscribe(
       // 1й метод - сработает, когда в Observable произойдет событие next()
       courses => console.log(courses),
 
