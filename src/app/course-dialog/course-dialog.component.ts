@@ -35,7 +35,37 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // this.form.valueChanges.subscribe(console.log);
+
+    // Внешний Observable
+    this.form.valueChanges
+      .pipe(
+        filter(() => this.form.valid),
+
+        // concatMap() - подписывается на внутренний Observable, возвращаемый из ф-ции saveCourse()
+        // и отправляет значения из внутреннего Observable во внешний, в порядке очереди.
+        // concatMap() не будет подписываться на следующий Observable, пока не завершится текущий.
+        concatMap(changes => this.saveCourse(changes))
+      )
+      .subscribe(console.log);
+  }
+
+  // saveCourse() - возвращает внутренний Observable
+  saveCourse(changes) {
+    // fromPromise() - преобразовывает Promise в Observable 
+    // (в данном случаи именуем его как внутренний)
+    return fromPromise(
+      // Вызов fetch() возвращает promise
+      fetch(`/api/courses/${this.course.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(changes),
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+    );
+  }
 
   ngAfterViewInit() {}
 
