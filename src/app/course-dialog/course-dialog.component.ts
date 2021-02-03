@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Course } from '../model/course';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
-import { fromEvent } from 'rxjs';
+import { from, fromEvent } from 'rxjs';
 import { concatMap, distinctUntilChanged, exhaustMap, filter, mergeMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 
@@ -38,6 +38,9 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     // this.form.valueChanges.subscribe(console.log);
 
+    // При каждом изменении значения внутри формы -
+    // она эмитит данные, которые можно отследить в valueChanges.
+    // valueChanges - позволяет отслеживать изменение значения формы.
     // Внешний Observable
     this.form.valueChanges
       .pipe(
@@ -54,7 +57,8 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   // saveCourse() - возвращает внутренний Observable
   saveCourse(changes) {
     // fromPromise() - преобразовывает Promise в Observable 
-    // (в данном случаи именуем его как внутренний)
+    // (fromPromise устаревший оператор и вместо него лучше использовать from)
+    // (в данном случаи именуем его как внутренний Observable)
     return fromPromise(
       // Вызов fetch() возвращает promise
       fetch(`/api/courses/${this.course.id}`, {
