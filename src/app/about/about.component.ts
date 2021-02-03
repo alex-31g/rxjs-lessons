@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
 import { concat, merge, of } from 'rxjs';
 import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { debounce, debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { from } from 'rxjs';
@@ -19,13 +19,22 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
-    const http$ = createHttpObservable('/api/courses');
-    const sub = http$.subscribe(console.log);
-    setTimeout(() => sub.unsubscribe(), 10);
+    // const http$ = createHttpObservable('/api/courses');
+    // const sub = http$.subscribe(console.log);
+    // setTimeout(() => sub.unsubscribe(), 10);
 
 
-
-
+    // const searchBox = document.getElementById('search');
+    // const keyup$ = fromEvent(searchBox, 'keyup');
+    
+    // keyup$
+    //   .pipe(
+    //     map((val: any) => val.currentTarget.value),
+        
+    //     debounceTime(2000),
+    //     distinctUntilChanged(),
+    //   )
+    //   .subscribe(console.log);
 
 
 
