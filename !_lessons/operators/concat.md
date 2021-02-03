@@ -14,8 +14,6 @@ const sourse3$ = of(50, 60).pipe(
   delay(100)
 );
 
-// Задача - объединить потоки sourse1$, sourse2$ и sourse3$
-
 // concat() - объединяет полученные Observable в один.
 // Пока один из полученных Observable не завершится, concat не перейдет к следующему
 const result$ = concat(sourse1$, sourse2$, sourse3$);

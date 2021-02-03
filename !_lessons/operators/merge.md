@@ -14,8 +14,6 @@ const sourse3$ = of(50, 60).pipe(
   delay(100)
 );
 
-// Задача - объединить потоки sourse1$, sourse2$ и sourse3$
-
 // merge() - объединяет полученные Observable в один.
 // В отличии от concat() - все переданные объекты выполняются независимо и не дожидаясь завершения друг от друг
 const result$ = merge(sourse1$, sourse2$, sourse3$);
