@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Course } from '../model/course';
 import { interval, Observable, of, timer, noop } from 'rxjs';
-import { catchError, delayWhen, map, retryWhen, shareReplay, tap } from 'rxjs/operators';
+import { catchError, delayWhen, finalize, map, retryWhen, shareReplay, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 
 @Component({
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
         map(res => res['payload']),
 
         shareReplay(),
-        catchError(err => of([]))
+        catchError(err => of([])),
       );
 
     // Cоздавать подписчика для beginnerCourses$ не нужно, так как значение этой переменной выводится в шаблон,
