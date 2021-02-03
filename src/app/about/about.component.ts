@@ -6,7 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { from } from 'rxjs';
-import { delay, mergeMap, concatMap, switchMap, shareReplay, take } from 'rxjs/operators';
+import { delay, mergeMap, concatMap, switchMap, shareReplay, take, exhaustMap } from 'rxjs/operators';
 import { Observer } from 'rxjs';
 
 @Component({
@@ -18,12 +18,6 @@ export class AboutComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-
-
-
-
-
-
 
 
 

@@ -46,10 +46,9 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
       .pipe(
         filter(() => this.form.valid),
 
-        // concatMap() - подписывается на внутренний Observable, возвращаемый из ф-ции saveCourse()
+        // mergeMap() - подписывается на внутренний Observable, возвращаемый из ф-ции saveCourse()
         // и отправляет значения из внутреннего Observable во внешний, в порядке очереди.
-        // concatMap() не будет подписываться на следующий Observable, пока не завершится текущий.
-        concatMap(changes => this.saveCourse(changes))
+        mergeMap(changes => this.saveCourse(changes))
       )
       .subscribe(console.log);
   }
@@ -71,7 +70,13 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
     );
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    
+    fromEvent(this.saveButton.nativeElement, 'click').pipe(
+      exhaustMap(() => this.saveCourse(this.form.value))
+    ).subscribe();
+
+  }
 
   close() {
     this.dialogRef.close();
