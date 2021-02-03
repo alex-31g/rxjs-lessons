@@ -31,7 +31,8 @@ export class HomeComponent implements OnInit {
         // map() - изменяет значение потока с помощью ф-ции-аргумента
         map(res => res['payload']),
 
-        shareReplay()
+        shareReplay(),
+        catchError(err => of([]))
       );
 
     // Cоздавать подписчика для beginnerCourses$ не нужно, так как значение этой переменной выводится в шаблон,

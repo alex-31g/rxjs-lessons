@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
 import { concat, merge, of } from 'rxjs';
 import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
-import { debounce, debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { catchError, debounce, debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { from } from 'rxjs';
