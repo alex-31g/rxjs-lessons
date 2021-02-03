@@ -1,6 +1,6 @@
-## concat
+## merge
 
-![](./imgs/concat.png)
+![](./imgs/merge.png)
 
 ```js
 // of() - создает из аргументов Observable
@@ -16,17 +16,17 @@ const sourse3$ = of(50, 60).pipe(
 
 // Задача - объединить потоки sourse1$, sourse2$ и sourse3$
 
-// concat() - объединяет полученные Observable в один.
-// Пока один из полученных Observable не завершится, concat не перейдет к следующему
-const result$ = concat(sourse1$, sourse2$, sourse3$);
+// merge() - объединяет полученные Observable в один.
+// В отличии от concat() - все переданные объекты выполняются независимо и не дожидаясь завершения друг от друг
+const result$ = merge(sourse1$, sourse2$, sourse3$);
 
 result$.subscribe(console.log);
 
 // РЕЗУЛЬТАТ:
+// 50
+// 60
 // 10
 // 20
 // 30
 // 40
-// 50
-// 60
 ```

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
-import { concat, of } from 'rxjs';
+import { concat, merge, of } from 'rxjs';
 import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
@@ -20,7 +20,7 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
 
 
-   
+
 
 
 
