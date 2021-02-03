@@ -19,30 +19,6 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
-    // const http$ = createHttpObservable('/api/courses');
-    // const sub = http$.subscribe(console.log);
-    // setTimeout(() => sub.unsubscribe(), 10);
-
-
-    // const searchBox = document.getElementById('search');
-    // const keyup$ = fromEvent(searchBox, 'keyup');
-    
-    // keyup$
-    //   .pipe(
-    //     map((val: any) => val.currentTarget.value),
-        
-    //     debounceTime(2000),
-    //     distinctUntilChanged(),
-    //   )
-    //   .subscribe(console.log);
-
-
-
-
-
-
-
-
   }
 
 }
