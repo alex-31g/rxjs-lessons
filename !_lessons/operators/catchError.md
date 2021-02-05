@@ -20,7 +20,7 @@ function createHttpObservable(url: string) {
         if (response.ok) {
           return response.json();
         } else {
-          observer.error('Request failed with status code: ' + response.status);
+          throw new Error('Request failed with status code: ' + response.status);
         }
       })
       .then(body => {
@@ -69,7 +69,7 @@ function createHttpObservable(url: string) {
         if (response.ok) {
           return response.json();
         } else {
-          observer.error('Request failed with status code: ' + response.status);
+          throw new Error('Request failed with status code: ' + response.status);
         }
       })
       .then(body => {
