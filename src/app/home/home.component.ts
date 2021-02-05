@@ -18,6 +18,10 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
 
+    // ==========================
+    // Страница All Courses: http://localhost:4200/
+    // ==========================
+    
     const http$: Observable<Course[]> = createHttpObservable('/api/courses');
 
     // Создаем новый Observable на базе http$

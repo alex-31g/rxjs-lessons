@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
 import { concat, merge, of, throwError } from 'rxjs';
 import { fromEvent, interval, noop, Observable, timer } from 'rxjs';
-import { catchError, debounce, debounceTime, delayWhen, distinctUntilChanged, finalize, map, retry, retryWhen, scan, tap } from 'rxjs/operators';
+import { catchError, debounce, debounceTime, delayWhen, distinctUntilChanged, finalize, map, retry, retryWhen, scan, startWith, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { from } from 'rxjs';
@@ -19,6 +19,8 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
+
+  
   }
 
 }

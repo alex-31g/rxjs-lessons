@@ -34,7 +34,12 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
       longDescription: [course.longDescription, Validators.required],
     });
   }
-
+  
+  // ==========================
+  // Окно редактирования, которое открывается при нажатии клавиши EDIT
+  // на странице All Courses: http://localhost:4200/
+  // ==========================
+  
   ngOnInit() {
     // this.form.valueChanges.subscribe(console.log);
 

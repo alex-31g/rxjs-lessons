@@ -39,16 +39,19 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    const searchLessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
+    // Данный Observable эмитит значения при нажатии клавиш внутри поля поиска
+    // на странице http://localhost:4200/courses/х 
+    // Но благодаря оператору startWith, при переходе на страницу впервые -
+    // Observable выдаст значение '', что спровоцирует запуск loadLessons()
+    this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
       .pipe(
         map(event => event.target.value),
+        startWith(''),
         debounceTime(400),
         distinctUntilChanged(),
         switchMap(search => this.loadLessons(search))
       );
-    
-    const initialLessons$ = this.loadLessons();
-    this.lessons$ = concat(initialLessons$, searchLessons$);
+
   }
 
   loadLessons(search = ''): Observable<Lesson[]> {
