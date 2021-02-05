@@ -32,7 +32,10 @@ export class HomeComponent implements OnInit {
         map(res => res['payload']),
 
         shareReplay(),
-        catchError(err => of([])),
+        
+        retryWhen(errors => errors.pipe(
+          delayWhen(() => timer(200))
+        ))
       );
 
     // Cоздавать подписчика для beginnerCourses$ не нужно, так как значение этой переменной выводится в шаблон,
