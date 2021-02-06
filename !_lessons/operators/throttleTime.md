@@ -1,3 +1,0 @@
-## throttleTime
-
-**throttleTime**
