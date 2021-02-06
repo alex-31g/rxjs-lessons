@@ -8,6 +8,7 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { from } from 'rxjs';
 import { delay, mergeMap, concatMap, switchMap, shareReplay, take, exhaustMap } from 'rxjs/operators';
 import { Observer } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'about',
@@ -18,9 +19,7 @@ export class AboutComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-
-
-  
+     
   }
 
 }
