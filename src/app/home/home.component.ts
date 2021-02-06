@@ -1,59 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { Course } from '../model/course';
-import { interval, Observable, of, timer, noop } from 'rxjs';
-import { catchError, delayWhen, finalize, map, retryWhen, shareReplay, tap } from 'rxjs/operators';
-import { createHttpObservable } from '../common/util';
+import {Component, OnInit} from '@angular/core';
+import {Course} from "../model/course";
+import {interval, noop, Observable, of, throwError, timer} from 'rxjs';
+import {catchError, delay, delayWhen, finalize, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
+import {createHttpObservable} from '../common/util';
+
 
 @Component({
-  selector: 'home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+    selector: 'home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
-  beginnerCourses$: Observable<Course[]>;
-  advancedCourses$: Observable<Course[]>;
+    beginnerCourses$: Observable<Course[]>;
 
-  constructor() {}
+    advancedCourses$: Observable<Course[]>;
 
-  ngOnInit() {
+    ngOnInit() {
 
-    // ==========================
-    // Страница All Courses: http://localhost:4200/
-    // ==========================
-    
-    const http$: Observable<Course[]> = createHttpObservable('/api/courses');
+        const http$ = createHttpObservable('/api/courses');
 
-    // Создаем новый Observable на базе http$
-    const courses$ = http$
-      // До того как была выполнена подписка с помощью subscribe(), с потоком можно работать внутри rxjs-метода pipe()
-      // pipe() - позволяет чейнить несколько rxjs-операторов, чтобы создать новый Observable-поток
-      .pipe(
-        // tap() - выполняет ф-цию-аргумент, не изменяя значение потока
-        tap(() => console.log('HTTP request executed')),
+        const courses$: Observable<Course[]> = http$
+            .pipe(
+                tap(() => console.log("HTTP request executed")),
+                map(res => Object.values(res["payload"]) ),
+                shareReplay(),
+                retryWhen(errors =>
+                    errors.pipe(
+                    delayWhen(() => timer(2000)
+                    )
+                ) )
+            );
 
-        // map() - изменяет значение потока с помощью ф-ции-аргумента
-        map(res => res['payload']),
+        this.beginnerCourses$ = courses$
+            .pipe(
+                map(courses => courses
+                    .filter(course => course.category == 'BEGINNER'))
+            );
 
-        shareReplay(),
-        
-        retryWhen(errors => errors.pipe(
-          delayWhen(() => timer(200))
-        ))
-      );
+        this.advancedCourses$ = courses$
+            .pipe(
+                map(courses => courses
+                    .filter(course => course.category == 'ADVANCED'))
+            );
 
-    // Cоздавать подписчика для beginnerCourses$ не нужно, так как значение этой переменной выводится в шаблон,
-    // и подписка произойдет автоматически с помощью async пайпа внутри шаблона
-    this.beginnerCourses$ = courses$
-      .pipe(
-        map(courses => courses.filter(course => course.category == 'BEGINNER'))
-      )
+    }
 
-    // Cоздавать подписчика для beginnerCourses$ не нужно, так как значение этой переменной выводится в шаблон,
-    // и подписка произойдет автоматически с помощью async пайпа внутри шаблона
-    this.advancedCourses$ = courses$
-      .pipe(
-        map(courses => courses.filter(course => course.category == 'ADVANCED'))
-      )
-  }
 }

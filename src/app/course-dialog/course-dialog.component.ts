@@ -1,89 +1,54 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Course } from '../model/course';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import {Course} from "../model/course";
+import {FormBuilder, Validators, FormGroup} from "@angular/forms";
 import * as moment from 'moment';
-import { from, fromEvent } from 'rxjs';
-import { concatMap, distinctUntilChanged, exhaustMap, filter, mergeMap } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/internal-compatibility';
+import {fromEvent} from 'rxjs';
+import {concatMap, distinctUntilChanged, exhaustMap, filter, mergeMap, tap} from 'rxjs/operators';
+import {fromPromise} from 'rxjs/internal-compatibility';
 
 @Component({
-  selector: 'course-dialog',
-  templateUrl: './course-dialog.component.html',
-  styleUrls: ['./course-dialog.component.css'],
+    selector: 'course-dialog',
+    templateUrl: './course-dialog.component.html',
+    styleUrls: ['./course-dialog.component.css']
 })
-export class CourseDialogComponent implements OnInit, AfterViewInit {
-  form: FormGroup;
-  course: Course;
+export class CourseDialogComponent implements AfterViewInit {
 
-  @ViewChild('saveButton', { static: true }) saveButton: ElementRef;
+    form: FormGroup;
 
-  @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
+    course:Course;
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<CourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) course: Course
-  ) {
-    this.course = course;
+    @ViewChild('saveButton', { static: true }) saveButton: ElementRef;
 
-    this.form = fb.group({
-      description: [course.description, Validators.required],
-      category: [course.category, Validators.required],
-      releasedAt: [moment(), Validators.required],
-      longDescription: [course.longDescription, Validators.required],
-    });
-  }
-  
-  // ==========================
-  // Окно редактирования, которое открывается при нажатии клавиши EDIT
-  // на странице All Courses: http://localhost:4200/
-  // ==========================
-  
-  ngOnInit() {
-    // this.form.valueChanges.subscribe(console.log);
+    @ViewChild('searchInput', { static: true }) searchInput : ElementRef;
 
-    // При каждом изменении значения внутри формы -
-    // она эмитит данные, которые можно отследить в valueChanges.
-    // valueChanges - позволяет отслеживать изменение значения формы.
-    // Внешний Observable
-    this.form.valueChanges
-      .pipe(
-        filter(() => this.form.valid),
+    constructor(
+        private fb: FormBuilder,
+        private dialogRef: MatDialogRef<CourseDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) course:Course ) {
 
-        // mergeMap() - подписывается на внутренний Observable, возвращаемый из ф-ции saveCourse()
-        // и отправляет значения из внутреннего Observable во внешний, в порядке очереди.
-        mergeMap(changes => this.saveCourse(changes))
-      )
-      .subscribe(console.log);
-  }
+        this.course = course;
 
-  // saveCourse() - возвращает внутренний Observable
-  saveCourse(changes) {
-    // fromPromise() - преобразовывает Promise в Observable 
-    // (fromPromise устаревший оператор и вместо него лучше использовать from)
-    // (в данном случаи именуем его как внутренний Observable)
-    return fromPromise(
-      // Вызов fetch() возвращает promise
-      fetch(`/api/courses/${this.course.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(changes),
-        headers: {
-          'content-type': 'application/json'
-        }
-      })
-    );
-  }
+        this.form = fb.group({
+            description: [course.description, Validators.required],
+            category: [course.category, Validators.required],
+            releasedAt: [moment(), Validators.required],
+            longDescription: [course.longDescription,Validators.required]
+        });
 
-  ngAfterViewInit() {
-    
-    fromEvent(this.saveButton.nativeElement, 'click').pipe(
-      exhaustMap(() => this.saveCourse(this.form.value))
-    ).subscribe();
+    }
 
-  }
+    ngAfterViewInit() {
 
-  close() {
-    this.dialogRef.close();
-  }
+
+
+    }
+
+
+
+    close() {
+        this.dialogRef.close();
+    }
+
+
 }

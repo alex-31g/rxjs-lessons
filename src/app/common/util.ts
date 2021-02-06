@@ -1,47 +1,38 @@
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
-// Метод для выполнения запросов к серверу -
-// возвращает Observer
-export function createHttpObservable(url: string) {
-  // Observable.create - создает Observable.
-  // Параметром принимает ф-цию, которая описывает, 
-  // как Observable будет работать со своими наблюдателями-подписчиками (observer)
-  return Observable.create(observer => {
 
-    // Чтобы отменить запрос fetch существует специальный встроенный объект: AbortController, 
-    // который можно использовать для отмены fetch запросов.
-    // AbortController имеет:
-    // - метод abort() - для отмены выполнения запроса
-    // - свойство signal - при значении true этого свойства - срабатывает отмена выполнения запроса
-    // (данное свойство передается в объект параметров метода fetch)
-    const controller = new AbortController();
-    const signal = controller.signal;
+export function createHttpObservable(url:string) {
+    return Observable.create(observer => {
 
-    // С помощью методов next, error, complete происходит взаимодействие с наблюдателями
+        const controller = new AbortController();
+        const signal = controller.signal;
 
-    fetch(url, {signal})
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Request failed with status code: ' + response.status);
-        }
-      })
-      .then(body => {
-        // next() - выдаем наблюдателям новые данные
-        observer.next(body);
+        fetch(url, {signal})
+            .then(response => {
 
-        // complete() - оповещаем наблюдателей, что поток завершился и новой информации не будет
-        observer.complete();
-      })
-      .catch(err => {
-        // error() - оповещаем наблюдателей об ошибке
-        observer.error(err);
-      })
+                if (response.ok) {
+                    return response.json();
+                }
+                else {
+                    observer.error('Request failed with status code: ' + response.status);
+                }
+            })
+            .then(body => {
 
-    // Возвращаем ф-цию, которая будет выполняться внутри метода unsubscribe на данном потоке - 
-    // когда подписчик отказывается от прослушки потока - и которая будет отменять запрос 
-    return () => controller.abort();
-    
-  })
+                observer.next(body);
+
+                observer.complete();
+
+            })
+            .catch(err => {
+
+                observer.error(err);
+
+            });
+
+        return () => controller.abort()
+
+
+    });
 }
+
