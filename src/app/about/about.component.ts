@@ -49,29 +49,18 @@ export class AboutComponent implements OnInit {
 
 
 // ================================================
-// ПРИМЕР 3:
-
-// import { ajax } from 'rxjs/ajax';
-
-// Создаем Subject
-const subject = new Subject();
-let val = ajax('https://jsonplaceholder.typicode.com/users').pipe(map(e => e.response));
-// Создаем подписчиков на Subject
-const subscriber_1$ = subject.subscribe((x) => console.log('Подписка 1:', x));
-const subscriber_2$ = subject.subscribe((x) => console.log('Подписка 2:', x ));
 
 
 
-// Subject имеет те же методы, что и Observable - next, error, complete и другие.
-// Пушим данные в Subject - все подписчики получат эти данные
-subject.next(val);
-subject.next(val);
 
-// РЕЗУЛЬТАТ:
-// Подписка 1: 1
-// Подписка 2: 10
-// Подписка 1: 2
-// Подписка 2: 20
 
-  }
+
+
+// ================================================
+
+
+
+
+
+}
 }
