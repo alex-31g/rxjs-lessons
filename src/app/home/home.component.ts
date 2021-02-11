@@ -3,6 +3,7 @@ import { Course } from '../model/course';
 import { interval, noop, Observable, of, throwError, timer } from 'rxjs';
 import { catchError, delay, delayWhen, finalize, map, retryWhen, shareReplay, tap } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
+import { Store } from '../common/store.service';
 
 @Component({
   selector: 'home',
@@ -10,22 +11,24 @@ import { createHttpObservable } from '../common/util';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  beginnerCourses$: Observable<Course[]>;
 
+  beginnerCourses$: Observable<Course[]>;
   advancedCourses$: Observable<Course[]>;
 
+  constructor(
+    // Инжектим класс Store из store.service
+    private store: Store
+  ) {}
+
   ngOnInit() {
-    const http$ = createHttpObservable('/api/courses');
+    // Содержимое store находится в переменной this.store.courses$
+    const courses$ = this.store.courses$.subscribe(store => console.log('Содержимое store', store));
 
-    const courses$: Observable<Course[]> = http$.pipe(
-      tap(() => console.log('HTTP request executed')),
-      map((res) => Object.values(res['payload'])),
-      shareReplay(),
-      retryWhen((errors) => errors.pipe(delayWhen(() => timer(2000))))
-    );
+    // Данный селектор возвращает Observable c курсами категории Beginner
+    this.beginnerCourses$ = this.store.selectBeginnerCourses();
 
-    this.beginnerCourses$ = courses$.pipe(map((courses) => courses.filter((course) => course.category == 'BEGINNER')));
-
-    this.advancedCourses$ = courses$.pipe(map((courses) => courses.filter((course) => course.category == 'ADVANCED')));
+    // Данный селектор возвращает Observable c курсами категории Advanced
+    this.advancedCourses$ = this.store.selectAdvancedCourses();
+    
   }
 }

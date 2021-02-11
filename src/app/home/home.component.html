@@ -3,10 +3,12 @@
 
   <mat-tab-group>
     <mat-tab label="Beginners">
+      <!-- Передаем значение beginnerCourses$ в *courses-card-list.component* -->
       <courses-card-list [courses]="beginnerCourses$ | async"> </courses-card-list>
     </mat-tab>
 
     <mat-tab label="Advanced">
+      <!-- Передаем значение advancedCourses$ в *courses-card-list.component* -->
       <courses-card-list [courses]="advancedCourses$ | async"></courses-card-list>
     </mat-tab>
   </mat-tab-group>
