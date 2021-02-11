@@ -3,6 +3,7 @@ import { Observable, Subject, BehaviorSubject } from "rxjs";
 import { map, tap } from "rxjs/operators";
 import { Course } from "../model/course";
 import { createHttpObservable } from "./util";
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 // К классу сервиса был применен декоратор @Injectable({ providedIn: 'root' }), 
 // который говорит, что данный сервис может использоваться в других сервисах 
@@ -58,5 +59,47 @@ export class Store {
     return this.courses$
       .pipe(
         map((courses) => courses.filter((course) => course.category == category)));
+  }
+
+  // Данный метод обновляет данные внутри store и сохраняет данные на сервере
+  saveStore(courseId: number, changes): Observable<any> {
+    
+    // getValue() - возвращает данные, которые Behavior subject сохранил в буфер - получаем массив курсов
+    const courses = this.subject.getValue();
+
+    // Поиск id курса
+    // findIndex - возвращает индекс элемента в массиве, который соответствует условию в переданной функции, 
+    // или -1 - если ни один элемент не удовлетворяет условие
+    const courseIndex = courses.findIndex(course => course.id == courseId);
+
+    // Чтобы изменить данные в store, мы должны запушить в сабжект обновленные данные.
+    // Для этого необходимо создать копию массива со старыми данными и обновить в этой копии
+    // тот объект, который изменил юзер:
+
+    // 1) Создаем копию массива courses
+    // slice - копирует и возвращает участок массива от begin до end, не включая end
+    const newCourses = courses.slice(0);
+    
+    // 2) С помощью spread оператора для newCourses[courseIndex] формируем новое значение,
+    // которое будет состоять из старого значения + новых изменений
+    newCourses[courseIndex] = {
+      ...courses[courseIndex],
+      ...changes
+    }
+
+    // 3) Пушим обновленные данные в subject
+    this.subject.next(newCourses);
+
+    // Сохраняем данные на сервере и возвращаем Observable
+    return fromPromise(
+      fetch(`/api/courses/${courseId}`, {
+        method: 'PUT',
+        body: JSON.stringify(changes),
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+    );
+
   }
 }
