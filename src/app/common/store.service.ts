@@ -53,11 +53,24 @@ export class Store {
     return this.filterByCategory('ADVANCED');
   }
 
+  // Извлекает из store выбранный курс
+  selectCourseById(courseId: number) {
+    // Поскольку в методе init() был выполнен пуш данных в сабжект -
+    // эти данные доступны в this.courses$
+    return this.courses$
+      .pipe(
+        // find() - возвращает значение первого элемента в массиве, который соответствует условию в переданной функции, 
+        // или undefined, если ни один элемент не удовлетворяет условию
+        map((courses) => courses.find((course) => course.id == courseId)));
+  }
+
+  // Формирует массив объектов с одинаковой категорией
   filterByCategory(category: string) {
     // Поскольку в методе init() был выполнен пуш данных в сабжект -
     // эти данные доступны в this.courses$
     return this.courses$
       .pipe(
+        // filter() - создает новый массив, элементы которого соответствуют условию заданному в пререданной функции 
         map((courses) => courses.filter((course) => course.category == category)));
   }
 
