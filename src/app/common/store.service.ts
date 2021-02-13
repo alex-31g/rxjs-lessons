@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, Subject, BehaviorSubject } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { filter, map, tap } from "rxjs/operators";
 import { Course } from "../model/course";
 import { createHttpObservable } from "./util";
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -61,7 +61,18 @@ export class Store {
       .pipe(
         // find() - возвращает значение первого элемента в массиве, который соответствует условию в переданной функции, 
         // или undefined, если ни один элемент не удовлетворяет условию
-        map((courses) => courses.find((course) => course.id == courseId)));
+        map((courses) => courses.find((course) => course.id == courseId)),
+        // C помощью !! переводим значение в boolean:
+        // если в course есть данные - получим true, если нет - false
+        // filter() - фильтрует значение с помощью ф-ции -
+        // если ф-ция возвращает true, то значение идет дальше по потоку, если false то значение не попадет к подписчику
+        filter(course => !!course)
+
+        // Применение оператора filter здесь нужно по след. причине:
+        // когда мы обновим страницу выбранного курса, например http://localhost:4200/courses/0,
+        // то в данный метод первым попадет пустой массив, поскольку мы указали, что BehaviorSubject 
+        // эмит первым значением пустой массив.
+      );
   }
 
   // Формирует массив объектов с одинаковой категорией

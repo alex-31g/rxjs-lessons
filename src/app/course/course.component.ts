@@ -13,8 +13,9 @@ import {
   withLatestFrom,
   concatAll,
   shareReplay,
+  first,
 } from 'rxjs/operators';
-import { merge, fromEvent, Observable, concat } from 'rxjs';
+import { merge, fromEvent, Observable, concat, forkJoin } from 'rxjs';
 import { Lesson } from '../model/lesson';
 import { createHttpObservable } from '../common/util';
 import { Store } from '../common/store.service';
@@ -25,7 +26,7 @@ import { Store } from '../common/store.service';
   styleUrls: ['./course.component.css'],
 })
 export class CourseComponent implements OnInit, AfterViewInit {
-  
+
   courseId: number;
   course$: Observable<Course>;
   lessons$: Observable<Lesson[]>;
